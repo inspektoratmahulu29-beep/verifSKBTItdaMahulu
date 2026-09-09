@@ -315,6 +315,7 @@
       <select id="newStatus" class="form-select mb-2">`;
 
     if (currentRole === 'irban') {
+      // TAMBAHKAN PILIHAN DITOLAK UNTUK IRBAN
       html += `
         <option value="Draft">Draft</option>
         <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
@@ -340,11 +341,17 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE - PERBAIKAN: Gunakan Google Docs Viewer untuk SEMUA file =====
+  // ===== VIEW FILE (PERBAIKAN KHUSUS XLSX/XLS) =====
   function viewFile(fileUrl, fileName) {
-    // Gunakan Google Docs Viewer agar browser tidak memuat langsung dari R2
-    // Google Docs Viewer mampu menampilkan PDF, gambar, dan file Office
-    const viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+    const ext = fileName.split('.').pop().toLowerCase();
+    let viewerUrl = fileUrl;
+
+    // PERBAIKAN: Gunakan Microsoft Office Viewer untuk XLSX/XLS dan file Office lainnya
+    // (Google Docs Viewer sering gagal untuk file Excel)
+    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+        viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
+    }
+    // Untuk PDF dan Gambar, biarkan browser menampilkan langsung di iframe
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
