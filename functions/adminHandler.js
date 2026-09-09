@@ -65,17 +65,23 @@ export const onRequest = async ({ request, env }) => {
 
   try {
     switch (action) {
-      // ============ LOGIN ADMIN (IRBAN & INSPEKTUR) ============
+      // ============ LOGIN ADMIN (IRBAN & INSPEKTUR) - VIA ENV ============
       case 'adminLogin': {
         const { username, password } = params;
 
-        // Akun Irban
-        if (username === 'Irbanwil28' && password === 'irbanwilayah28') {
+        // Cek apakah Environment Variable sudah diset
+        if (!env.IRBAN_USERNAME || !env.IRBAN_PASSWORD || !env.INSPEKTUR_USERNAME || !env.INSPEKTUR_PASSWORD) {
+          console.error('Environment variables untuk login belum diset!');
+          return jsonResponse({ status: 'error', msg: 'Server belum dikonfigurasi dengan benar' });
+        }
+
+        // Akun Irban dari Environment Variables
+        if (username === env.IRBAN_USERNAME && password === env.IRBAN_PASSWORD) {
           return jsonResponse({ status: 'success', role: 'irban', msg: 'Login berhasil sebagai Irban' });
         }
 
-        // Akun Inspektur
-        if (username === 'ItdakabMahulu' && password === 'ItdaMahulu28') {
+        // Akun Inspektur dari Environment Variables
+        if (username === env.INSPEKTUR_USERNAME && password === env.INSPEKTUR_PASSWORD) {
           return jsonResponse({ status: 'success', role: 'inspektur', msg: 'Login berhasil sebagai Inspektur' });
         }
 
