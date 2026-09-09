@@ -363,14 +363,18 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE (Perbaikan: Gunakan Google Docs Viewer agar tidak download) =====
+  // ===== VIEW FILE (Perbaikan: Gunakan Viewer yang benar-benar berfungsi) =====
   function viewFile(fileUrl, fileName) {
-    // Encode URL agar aman
-    const encodedUrl = encodeURIComponent(fileUrl);
-    
-    // Google Docs Viewer menangani PDF, DOCX, XLSX, PPTX, dan banyak lagi
-    // Ini memaksa tampilan preview di iframe, bukan download
-    const viewerUrl = 'https://docs.google.com/viewer?url=' + encodedUrl + '&embedded=true';
+    // Dapatkan ekstensi file
+    const ext = fileName.split('.').pop().toLowerCase();
+    let viewerUrl = fileUrl; // Default: langsung buka file
+
+    // Jika file Office (Word, Excel, PPT), gunakan Microsoft Office Viewer
+    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+        viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
+    }
+    // Jika PDF atau Gambar, biarkan langsung di-render oleh browser (via iframe)
+    // (Browser modern otomatis menampilkan PDF dan gambar di iframe)
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
