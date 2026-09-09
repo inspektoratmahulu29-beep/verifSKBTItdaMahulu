@@ -340,11 +340,36 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE - PERBAIKAN: Gunakan Google Docs Viewer untuk SEMUA file =====
+  // ===== VIEW FILE - PERBAIKAN KHUSUS GAMBAR & XLSX =====
   function viewFile(fileUrl, fileName) {
-    // Gunakan Google Docs Viewer agar browser tidak memuat langsung dari R2
-    // Google Docs Viewer mampu menampilkan PDF, gambar, dan file Office
-    const viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+    const ext = fileName.split('.').pop().toLowerCase();
+    let viewerUrl = fileUrl;
+
+    // Untuk GAMBAR (png, jpg, jpeg, gif, webp, bmp) -> Tampilkan langsung di iframe
+    // karena Content-Type sudah benar (image/png, image/jpeg, dll)
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(ext)) {
+      viewerUrl = fileUrl;
+    }
+    // Untuk PDF -> Tampilkan langsung di iframe (browser bisa render PDF)
+    else if (ext === 'pdf') {
+      viewerUrl = fileUrl;
+    }
+    // Untuk DOC/DOCX -> Gunakan Google Docs Viewer (sama seperti sebelumnya)
+    else if (['doc', 'docx'].includes(ext)) {
+      viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+    }
+    // Untuk XLS/XLSX -> Gunakan Microsoft Office Viewer (paling stabil untuk Excel)
+    else if (['xls', 'xlsx'].includes(ext)) {
+      viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
+    }
+    // Untuk PPT/PPTX -> Gunakan Microsoft Office Viewer
+    else if (['ppt', 'pptx'].includes(ext)) {
+      viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
+    }
+    // Fallback -> Google Docs Viewer
+    else {
+      viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+    }
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
