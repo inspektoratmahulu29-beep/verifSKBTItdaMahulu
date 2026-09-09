@@ -44,11 +44,20 @@
     .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
     .modal-footer { border-top: 1px solid rgba(255,255,255,0.1); }
     .doc-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.03); }
-    .btn-sm-custom { padding: 6px 14px; font-size: 0.8rem; border-radius: 20px; border: none; transition: all 0.3s; }
+    .btn-sm-custom { padding: 6px 12px; font-size: 0.8rem; border-radius: 20px; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-view { background: rgba(0,180,216,0.2); color: #00b4d8; border: 1px solid #00b4d8; }
+    .btn-view:hover { background: #00b4d8; color: #fff; }
     .btn-approve { background: rgba(6,214,160,0.2); color: #06d6a0; border: 1px solid #06d6a0; }
     .btn-approve:hover { background: #06d6a0; color: #fff; }
     .btn-reject { background: rgba(255,107,107,0.2); color: #ff6b6b; border: 1px solid #ff6b6b; }
     .btn-reject:hover { background: #ff6b6b; color: #fff; }
+    .btn-sm-custom svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* Viewer Modal */
+    .viewer-modal .modal-content { background: #000; border: none; border-radius: 12px; }
+    .viewer-modal .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .viewer-modal .modal-body { padding: 0; }
+    .viewer-modal iframe { width: 100%; height: 80vh; border: none; background: #fff; }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     .hidden { display: none !important; }
@@ -128,14 +137,29 @@
   </div>
 </div>
 
+<!-- ================= MODAL VIEWER ================= -->
+<div class="modal fade viewer-modal" id="viewerModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewerTitle">View File</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <iframe id="viewerFrame" src="" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const API = '/adminHandler?action=';
   
-  // ===== SESI LOGIN (TIDAK LOGOUT SAAT REFRESH) =====
+  // Sesi Login
   let currentRole = sessionStorage.getItem('adminRole') || '';
   let currentUsername = sessionStorage.getItem('adminUser') || '';
-  let currentDetailId = null; // SIMPAN ID YANG SEDANG DIBUKA
+  let currentDetailId = null;
 
   function selectRole(role) {
     currentRole = role;
@@ -237,7 +261,7 @@
   }
 
   async function showDetail(id) {
-    currentDetailId = id; // SIMPAN ID
+    currentDetailId = id;
     const data = await callAdmin('adminGetPengajuanById', { id });
     if (!data.submission) return;
     const sub = data.submission;
@@ -275,8 +299,18 @@
             </div>
             <div class="d-flex align-items-center gap-2">
               <span class="badge ${badge}">${status}</span>
-              <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">✔️ Setujui</button>
-              <button class="btn-sm-custom btn-reject" onclick="verifDoc(${doc.id}, 'rejected')">✖️ Tolak</button>
+              <button class="btn-sm-custom btn-view" onclick="viewFile('${doc.file_url}', '${doc.file_name}')">
+                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                View
+              </button>
+              <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Setujui
+              </button>
+              <button class="btn-sm-custom btn-reject" onclick="verifDoc(${doc.id}, 'rejected')">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                Tolak
+              </button>
             </div>
           </div>
           ${doc.verification_note ? `<small class="text-muted d-block mt-2">Catatan: ${doc.verification_note}</small>` : ''}
@@ -298,8 +332,6 @@
       <button class="btn-gradient" style="width:auto; margin-top:10px;" onclick="updateStatus(${sub.id})">Update Status</button>`;
 
     document.getElementById('detailBody').innerHTML = html;
-    
-    // Jika modal belum terbuka, buka. Jika sudah, biarkan tetap terbuka.
     const modalEl = document.getElementById('detailModal');
     const modalInstance = bootstrap.Modal.getInstance(modalEl);
     if (!modalInstance) {
@@ -307,7 +339,31 @@
     }
   }
 
-  // ===== PERBAIKAN UTAMA 1: JANGAN TUTUP MODAL, HANYA REFRESH ISI MODAL =====
+  // ===== VIEW FILE DENGAN IFRAME (GOOGLE DOCS VIEWER / DIRECT) =====
+  function viewFile(fileUrl, fileName) {
+    // Tentukan URL viewer berdasarkan ekstensi file
+    const ext = fileName.split('.').pop().toLowerCase();
+    let viewerUrl = fileUrl;
+
+    // Untuk PDF & gambar, tampilkan langsung via iframe
+    if (['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(ext)) {
+      viewerUrl = fileUrl;
+    } 
+    // Untuk dokumen Office (doc, docx, xls, xlsx, ppt, pptx) gunakan Google Docs Viewer
+    else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+      viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
+    }
+    // Fallback ke file asli (bisa diunduh)
+    else {
+      viewerUrl = fileUrl;
+    }
+
+    document.getElementById('viewerTitle').innerText = fileName;
+    document.getElementById('viewerFrame').src = viewerUrl;
+    new bootstrap.Modal(document.getElementById('viewerModal')).show();
+  }
+
+  // Verifikasi dokumen (tanpa menutup modal detail)
   async function verifDoc(docId, status) {
     const catatan = document.getElementById('note_' + docId).value;
     const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
@@ -315,11 +371,10 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    // Refresh isi modal dengan data terbaru, TANPA menutupnya
-    showDetail(currentDetailId);
+    showDetail(currentDetailId); // Refresh isi modal
   }
 
-  // ===== PERBAIKAN UTAMA 2: TUTUP MODAL HANYA SETELAH UPDATE STATUS =====
+  // Update status keseluruhan (menutup modal detail)
   async function updateStatus(id) {
     const status = document.getElementById('newStatus').value;
     const catatan = document.getElementById('statusNote').value;
@@ -328,15 +383,13 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    // Baru tutup modal dan refresh list setelah update status selesai
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
-    
     loadPengajuan();
   }
 
-  // ===== INISIALISASI SAAT HALAMAN DIMUAT =====
+  // Inisialisasi halaman
   document.addEventListener('DOMContentLoaded', () => {
     if (currentRole && currentUsername) {
       document.getElementById('loginBox').style.display = 'none';
