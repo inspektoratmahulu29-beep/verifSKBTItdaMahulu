@@ -87,7 +87,8 @@
         <select id="filterStatus" class="form-select mt-2" onchange="loadPengajuan()">
           <option value="all">Semua Status</option>
           <option value="Draft">Draft</option>
-          <option value="Sedang Verifikasi oleh Irban">Sedang Verifikasi oleh Irban</option>
+          <option value="Sedang Verifikasi">Sedang Verifikasi</option>
+          <option value="Diverifikasi oleh Irban">Diverifikasi oleh Irban</option>
           <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
           <option value="Disetujui oleh Inspektur">Disetujui oleh Inspektur</option>
           <option value="Ditolak">Ditolak</option>
@@ -220,7 +221,7 @@
     data.forEach(item => {
       let badgeClass = 'bg-warning text-dark';
       if (item.status_verifikasi === 'Ditolak') badgeClass = 'bg-danger';
-      else if (item.status_verifikasi === 'Disetujui oleh Inspektur' || item.status_verifikasi === 'Selesai') badgeClass = 'bg-success';
+      else if (item.status_verifikasi === 'Disetujui oleh Inspektur' || item.status_verifikasi === 'Diverifikasi oleh Irban' || item.status_verifikasi === 'Diverifikasi' || item.status_verifikasi === 'Selesai') badgeClass = 'bg-success';
       
       list.innerHTML += `
         <div class="card-pengajuan" onclick="showDetail(${item.id})">
@@ -316,9 +317,9 @@
     if (currentRole === 'irban') {
       html += `
         <option value="Draft">Draft</option>
-        <option value="Sedang Verifikasi oleh Irban" selected>Sedang Verifikasi oleh Irban</option>
-        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
-        <option value="Ditolak">Ditolak</option>`;
+        <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
+        <option value="Diverifikasi oleh Irban">Diverifikasi oleh Irban</option>
+        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>`;
     } else if (currentRole === 'inspektur') {
       html += `
         <option value="Menunggu Persetujuan Inspektur" selected>Menunggu Persetujuan Inspektur</option>
@@ -338,35 +339,24 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE: Gunakan Blob URL agar tidak terdownload =====
-  async function viewFile(fileUrl, fileName) {
-    try {
-      // Ambil file dari URL
-      const response = await fetch(fileUrl);
-      if (!response.ok) throw new Error('File tidak dapat diakses');
-      
-      // Ambil blob dan buat URL objek
-      const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      
-      // Tentukan tipe viewer berdasarkan ekstensi
-      const ext = fileName.split('.').pop().toLowerCase();
-      let viewerUrl = objectUrl;
+  // ===== VIEW FILE (PERBAIKAN: TANPA FETCH, LANGSUNG PAKAI IFRAME) =====
+  function viewFile(fileUrl, fileName) {
+    const ext = fileName.split('.').pop().toLowerCase();
+    let viewerUrl = fileUrl;
 
-      // Untuk file Office, gunakan Microsoft Office Viewer (karena blob tidak bisa dibaca office viewer)
-      if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+    // Untuk file Office, gunakan Microsoft Office Viewer
+    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
         viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-      }
-
-      document.getElementById('viewerTitle').innerText = fileName;
-      document.getElementById('viewerFrame').src = viewerUrl;
-      
-      const modalEl = document.getElementById('viewerModal');
-      const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-      modalInstance.show();
-    } catch (error) {
-      alert('Gagal membuka file: ' + error.message);
     }
+    // Untuk PDF dan Gambar, biarkan browser menampilkan langsung di iframe
+    // (Karena Content-Type sudah benar dari skbtHandler.js)
+
+    document.getElementById('viewerTitle').innerText = fileName;
+    document.getElementById('viewerFrame').src = viewerUrl;
+    
+    const modalEl = document.getElementById('viewerModal');
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modalInstance.show();
   }
 
   // ===== VERIFIKASI DOKUMEN (TANPA MENUTUP MODAL) =====
