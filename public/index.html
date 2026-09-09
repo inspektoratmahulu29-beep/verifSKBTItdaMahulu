@@ -7,79 +7,46 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    
     :root {
-      --bg-1: #0f2027;
-      --bg-2: #203a43;
-      --bg-3: #2c5364;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --success: #34d399;
-      --danger: #fb7185;
-      --surface: rgba(255, 255, 255, 0.08);
-      --surface-hover: rgba(255, 255, 255, 0.15);
-      --border: rgba(255, 255, 255, 0.15);
+      --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364;
+      --text: #f1f5f9; --text-muted: #94a3b8;
+      --accent: #38bdf8; --success: #34d399; --danger: #fb7185;
+      --border: rgba(255,255,255,0.15);
     }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-      color: var(--text);
-      min-height: 100vh;
-      padding: 30px;
-    }
-
-    .login-box { max-width: 450px; margin: 80px auto; background: rgba(15, 32, 39, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.4); animation: fadeUp 0.8s ease; }
+    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); color: var(--text); min-height: 100vh; padding: 30px; }
+    .login-box { max-width: 450px; margin: 80px auto; background: rgba(15,32,39,0.95); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.4); animation: fadeUp .8s ease; }
     .login-title { text-align: center; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
-    .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 0.9rem; }
-    .role-selector { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 50px; border: 1px solid var(--border); }
-    .role-btn { flex: 1; background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 10px; border-radius: 40px; font-weight: 600; transition: all 0.3s; cursor: pointer; }
-    .role-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
-    .form-control { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; border-radius: 12px; padding: 12px 16px; transition: all 0.3s; }
-    .form-control:focus { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2); }
-    .form-control::placeholder { color: rgba(255, 255, 255, 0.4); }
-    .btn-gradient { background: linear-gradient(135deg, var(--accent), var(--success)); border: none; color: #fff; font-weight: 700; padding: 14px 32px; border-radius: 50px; box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3); transition: all 0.3s; width: 100%; margin-top: 10px; }
-    .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(52, 211, 153, 0.5); }
-    .error-msg { color: var(--danger); font-size: 0.9rem; text-align: center; margin-top: 10px; min-height: 20px; }
-
-    .dashboard { display: none; animation: fadeUp 0.8s ease; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15, 32, 39, 0.8); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
+    .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: .9rem; }
+    .role-selector { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,.3); padding: 8px; border-radius: 50px; border: 1px solid var(--border); }
+    .role-btn { flex: 1; background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 10px; border-radius: 40px; font-weight: 600; transition: all .3s; cursor: pointer; }
+    .role-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(56,189,248,.4); }
+    .form-control { background: rgba(255,255,255,.1); border: 1px solid var(--border); color: #fff; border-radius: 12px; padding: 12px 16px; }
+    .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(56,189,248,.2); }
+    .btn-gradient { background: linear-gradient(135deg, var(--accent), var(--success)); border: none; color: #fff; font-weight: 700; padding: 14px 32px; border-radius: 50px; width: 100%; margin-top: 10px; }
+    .btn-gradient:hover { transform: translateY(-2px); }
+    .dashboard { display: none; animation: fadeUp .8s ease; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15,32,39,.8); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
     .header-title h2 { font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0; }
-    .header-title p { color: var(--text-muted); font-size: 0.85rem; margin: 5px 0 0; }
-    .btn-outline-light-custom { background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 10px 20px; border-radius: 50px; transition: all 0.3s; }
-    .btn-outline-light-custom:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent); }
-
-    .filter-box { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-    .form-select { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; border-radius: 12px; padding: 10px 15px; }
+    .header-title p { color: var(--text-muted); font-size: .85rem; margin: 5px 0 0; }
+    .btn-outline-light-custom { background: transparent; border: 1px solid var(--border); color: #fff; padding: 10px 20px; border-radius: 50px; }
+    .filter-box { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
+    .form-select { background: rgba(255,255,255,.1); border: 1px solid var(--border); color: #fff; border-radius: 12px; padding: 10px 15px; }
     .form-select option { background: #0f2027; color: #fff; }
-
-    .card-pengajuan { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; transition: all 0.3s; cursor: pointer; }
-    .card-pengajuan:hover { background: rgba(255, 255, 255, 0.15); transform: translateX(5px); border-color: rgba(56, 189, 248, 0.5); }
-    .badge-custom { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-
+    .card-pengajuan { background: rgba(255,255,255,.08); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; transition: all .3s; cursor: pointer; }
+    .card-pengajuan:hover { background: rgba(255,255,255,.15); transform: translateX(5px); }
     .modal-content { background: linear-gradient(135deg, #101f2c, #1b2a38); border: 1px solid var(--border); border-radius: 20px; color: #fff; }
-    .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .modal-footer { border-top: 1px solid rgba(255,255,255,0.1); }
-    .doc-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05); }
-    
-    .btn-sm-custom { padding: 6px 12px; font-size: 0.8rem; border-radius: 20px; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; }
-    .btn-view { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }
-    .btn-view:hover { background: #38bdf8; color: #fff; }
-    .btn-approve { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid #34d399; }
-    .btn-approve:hover { background: #34d399; color: #fff; }
-    .btn-reject { background: rgba(251, 113, 133, 0.15); color: #fb7185; border: 1px solid #fb7185; }
-    .btn-reject:hover { background: #fb7185; color: #fff; }
+    .doc-item { border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,.05); }
+    .btn-sm-custom { padding: 6px 12px; font-size: .8rem; border-radius: 20px; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .3s; }
+    .btn-view { background: rgba(56,189,248,.15); color: var(--accent); border: 1px solid var(--accent); }
+    .btn-view:hover { background: var(--accent); color: #fff; }
+    .btn-approve { background: rgba(52,211,153,.15); color: var(--success); border: 1px solid var(--success); }
+    .btn-approve:hover { background: var(--success); color: #fff; }
+    .btn-reject { background: rgba(251,113,133,.15); color: var(--danger); border: 1px solid var(--danger); }
+    .btn-reject:hover { background: var(--danger); color: #fff; }
     .btn-sm-custom svg { width: 14px; height: 14px; fill: currentColor; }
-
     .viewer-modal .modal-content { background: #000; border: none; border-radius: 12px; }
-    .viewer-modal .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .viewer-modal .modal-body { padding: 0; }
     .viewer-modal iframe { width: 100%; height: 85vh; border: none; background: #fff; }
-
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -88,18 +55,16 @@
 <div class="login-box" id="loginBox">
   <div class="login-title">Admin Verifikasi SKBT</div>
   <div class="login-subtitle">Inspektorat Daerah Kabupaten Mahakam Ulu</div>
-
   <div class="role-selector">
     <button class="role-btn active" id="btnIrban" onclick="selectRole('irban')">Irban</button>
     <button class="role-btn" id="btnInspektur" onclick="selectRole('inspektur')">Inspektur</button>
   </div>
-
   <div class="mb-3">
-    <label class="form-label" style="color:#94a3b8; font-size:0.85rem; font-weight:600;">Username</label>
+    <label class="form-label" style="color:#94a3b8;">Username</label>
     <input type="text" id="usernameInput" class="form-control" placeholder="Masukkan username">
   </div>
   <div class="mb-3">
-    <label class="form-label" style="color:#94a3b8; font-size:0.85rem; font-weight:600;">Password</label>
+    <label class="form-label" style="color:#94a3b8;">Password</label>
     <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password">
   </div>
   <button class="btn-gradient" onclick="login()">Masuk</button>
@@ -115,20 +80,18 @@
     </div>
     <button class="btn-outline-light-custom" onclick="logout()">Keluar</button>
   </div>
-
   <div class="filter-box">
     <div class="row g-3">
       <div class="col-md-6">
-        <label style="color:#94a3b8; font-size:0.85rem; font-weight:600;">Filter Status</label>
+        <label style="color:#94a3b8;">Filter Status</label>
         <select id="filterStatus" class="form-select mt-2" onchange="loadPengajuan()">
           <option value="all">Semua Status</option>
           <option value="Draft">Draft</option>
           <option value="Sedang Verifikasi">Sedang Verifikasi</option>
           <option value="Menunggu Irban">Menunggu Irban</option>
-          <option value="Menunggu Inspektur">Menunggu Inspektur</option>
-          <option value="Diverifikasi">Diverifikasi</option>
+          <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
+          <option value="Disetujui oleh Inspektur">Disetujui oleh Inspektur</option>
           <option value="Ditolak">Ditolak</option>
-          <option value="Selesai">Selesai</option>
         </select>
       </div>
       <div class="col-md-6 d-flex align-items-end">
@@ -136,7 +99,6 @@
       </div>
     </div>
   </div>
-
   <div id="pengajuanList"></div>
 </div>
 
@@ -174,7 +136,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const API = '/adminHandler?action=';
-  
   let currentRole = sessionStorage.getItem('adminRole') || '';
   let currentUsername = sessionStorage.getItem('adminUser') || '';
   let currentDetailId = null;
@@ -206,7 +167,6 @@
       if (res.status === 'success') {
         sessionStorage.setItem('adminRole', res.role);
         sessionStorage.setItem('adminUser', username);
-        
         currentUsername = username;
         document.getElementById('loginBox').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
@@ -216,15 +176,12 @@
         errorMsg.innerText = res.msg;
       }
     })
-    .catch(err => {
-      errorMsg.innerText = 'Koneksi error, coba lagi.';
-    });
+    .catch(err => { errorMsg.innerText = 'Koneksi error, coba lagi.'; });
   }
 
   function logout() {
     sessionStorage.removeItem('adminRole');
     sessionStorage.removeItem('adminUser');
-    
     currentRole = '';
     currentUsername = '';
     document.getElementById('usernameInput').value = '';
@@ -262,8 +219,10 @@
     }
 
     data.forEach(item => {
-      const badgeClass = item.status_verifikasi === 'Ditolak' ? 'bg-danger' : 
-                         (item.status_verifikasi === 'Diverifikasi' || item.status_verifikasi === 'Selesai' ? 'bg-success' : 'bg-warning text-dark');
+      let badgeClass = 'bg-warning text-dark';
+      if (item.status_verifikasi === 'Ditolak') badgeClass = 'bg-danger';
+      else if (item.status_verifikasi === 'Disetujui oleh Inspektur' || item.status_verifikasi === 'Diverifikasi' || item.status_verifikasi === 'Selesai') badgeClass = 'bg-success';
+      
       list.innerHTML += `
         <div class="card-pengajuan" onclick="showDetail(${item.id})">
           <div class="d-flex justify-content-between align-items-center">
@@ -308,7 +267,9 @@
 
     docs.forEach(doc => {
       const status = doc.verification_status || 'pending';
-      const badge = status === 'approved' ? 'bg-success' : (status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark');
+      let badge = 'bg-warning text-dark';
+      if (status === 'approved') badge = 'bg-success';
+      else if (status === 'rejected') badge = 'bg-danger';
       
       html += `
         <div class="doc-item">
@@ -324,6 +285,7 @@
                 View
               </button>`;
 
+      // Hanya Irban yang bisa verifikasi dokumen per file
       if (currentRole === 'irban') {
         html += `
               <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">
@@ -348,6 +310,7 @@
       html += `</div>`;
     });
 
+    // ===== UPDATE STATUS KESELURUHAN =====
     html += `</div><hr><h6 class="mb-3">Update Status Keseluruhan</h6>
       <select id="newStatus" class="form-select mb-2">`;
 
@@ -356,13 +319,12 @@
         <option value="Draft">Draft</option>
         <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
         <option value="Menunggu Irban">Menunggu Irban</option>
-        <option value="Menunggu Inspektur">Menunggu Inspektur</option>`;
+        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>`;
     } else if (currentRole === 'inspektur') {
       html += `
-        <option value="Menunggu Inspektur" selected>Menunggu Inspektur</option>
-        <option value="Diverifikasi">Diverifikasi</option>
-        <option value="Ditolak">Ditolak</option>
-        <option value="Selesai">Selesai</option>`;
+        <option value="Menunggu Persetujuan Inspektur" selected>Menunggu Persetujuan Inspektur</option>
+        <option value="Disetujui oleh Inspektur">Disetujui oleh Inspektur</option>
+        <option value="Ditolak">Ditolak</option>`;
     }
 
     html += `
@@ -377,28 +339,40 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE: Solusi Anti-Download =====
-  function viewFile(fileUrl, fileName) {
-    const ext = fileName.split('.').pop().toLowerCase();
-    let viewerUrl = fileUrl;
+  // ===== VIEW FILE: Gunakan Blob URL agar tidak terdownload =====
+  async function viewFile(fileUrl, fileName) {
+    try {
+      // Ambil file dari URL
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error('File tidak dapat diakses');
+      
+      // Ambil blob dan buat URL objek
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      
+      // Tentukan tipe viewer berdasarkan ekstensi
+      const ext = fileName.split('.').pop().toLowerCase();
+      let viewerUrl = objectUrl;
 
-    // Jika file Office, pakai Microsoft Office Viewer
-    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+      // Untuk file Office, gunakan Microsoft Office Viewer (karena blob tidak bisa dibaca office viewer)
+      if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+        // Kita tidak bisa menggunakan blob URL untuk Office Viewer,
+        // jadi kita gunakan URL asli (yang sudah memiliki Content-Type benar jika skbtHandler.js sudah diperbarui)
         viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-    }
-    // Jika PDF: langsung tampilkan di iframe (browser modern sudah bisa render PDF jika content-type benar)
-    // Jika gambar: langsung tampilkan di iframe
+      }
 
-    // Jika masih gagal, tambahkan fallback ke Google Docs Viewer
-    // Kita coba dulu pakai viewer file langsung, jika tidak muncul kita bisa ganti strategi
-    document.getElementById('viewerTitle').innerText = fileName;
-    document.getElementById('viewerFrame').src = viewerUrl;
-    
-    const modalEl = document.getElementById('viewerModal');
-    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modalInstance.show();
+      document.getElementById('viewerTitle').innerText = fileName;
+      document.getElementById('viewerFrame').src = viewerUrl;
+      
+      const modalEl = document.getElementById('viewerModal');
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modalInstance.show();
+    } catch (error) {
+      alert('Gagal membuka file: ' + error.message);
+    }
   }
 
+  // ===== VERIFIKASI DOKUMEN (TANPA MENUTUP MODAL) =====
   async function verifDoc(docId, status) {
     const catatan = document.getElementById('note_' + docId).value;
     const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
@@ -409,6 +383,7 @@
     showDetail(currentDetailId);
   }
 
+  // ===== UPDATE STATUS KESELURUHAN (MENUTUP MODAL) =====
   async function updateStatus(id) {
     const status = document.getElementById('newStatus').value;
     const catatan = document.getElementById('statusNote').value;
@@ -417,19 +392,17 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     modal.hide();
-    
     loadPengajuan();
   }
 
+  // ===== INISIALISASI HALAMAN =====
   document.addEventListener('DOMContentLoaded', () => {
     if (currentRole && currentUsername) {
       document.getElementById('loginBox').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      
       if (currentRole === 'irban') {
         document.getElementById('btnIrban').classList.add('active');
         document.getElementById('btnInspektur').classList.remove('active');
@@ -437,7 +410,6 @@
         document.getElementById('btnInspektur').classList.add('active');
         document.getElementById('btnIrban').classList.remove('active');
       }
-      
       document.getElementById('roleInfo').innerText = 'Role: ' + (currentRole === 'irban' ? 'Irban' : 'Inspektur') + ' | User: ' + currentUsername;
       loadPengajuan();
     } else {
