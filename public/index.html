@@ -319,7 +319,8 @@
         <option value="Draft">Draft</option>
         <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
         <option value="Diverifikasi oleh Irban">Diverifikasi oleh Irban</option>
-        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>`;
+        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
+        <option value="Ditolak">Ditolak</option>`;
     } else if (currentRole === 'inspektur') {
       html += `
         <option value="Menunggu Persetujuan Inspektur" selected>Menunggu Persetujuan Inspektur</option>
@@ -339,14 +340,11 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE (TANPA FETCH - LANGSUNG IFRAME) =====
+  // ===== VIEW FILE - PERBAIKAN: Gunakan Google Docs Viewer untuk SEMUA file =====
   function viewFile(fileUrl, fileName) {
-    const ext = fileName.split('.').pop().toLowerCase();
-    let viewerUrl = fileUrl;
-
-    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
-        viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-    }
+    // Gunakan Google Docs Viewer agar browser tidak memuat langsung dari R2
+    // Google Docs Viewer mampu menampilkan PDF, gambar, dan file Office
+    const viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
