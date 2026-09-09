@@ -95,6 +95,7 @@
         <select id="filterStatus" class="form-select mt-2" onchange="loadPengajuan()">
           <option value="all">Semua Status</option>
           <option value="Draft">Draft</option>
+          <option value="Sedang Verifikasi">Sedang Verifikasi</option>
           <option value="Menunggu Irban">Menunggu Irban</option>
           <option value="Menunggu Inspektur">Menunggu Inspektur</option>
           <option value="Diverifikasi">Diverifikasi</option>
@@ -131,10 +132,9 @@
 <script>
   const API = '/adminHandler?action=';
   
-  // Ambil sesi dari sessionStorage agar tidak logout saat refresh
+  // ===== SESI LOGIN (TIDAK LOGOUT SAAT REFRESH) =====
   let currentRole = sessionStorage.getItem('adminRole') || '';
   let currentUsername = sessionStorage.getItem('adminUser') || '';
-  let currentDetailId = null; // Simpan ID pengajuan yang sedang dibuka
 
   function selectRole(role) {
     currentRole = role;
@@ -161,7 +161,7 @@
     .then(r => r.json())
     .then(res => {
       if (res.status === 'success') {
-        // Simpan sesi ke sessionStorage
+        // Simpan sesi
         sessionStorage.setItem('adminRole', res.role);
         sessionStorage.setItem('adminUser', username);
         
@@ -196,12 +196,17 @@
   }
 
   async function callAdmin(action, params = {}) {
-    const res = await fetch(API + action, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params)
-    });
-    return await res.json();
+    try {
+      const res = await fetch(API + action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      return await res.json();
+    } catch (e) {
+      console.error('Fetch error:', e);
+      return { status: 'error', msg: 'Koneksi ke server gagal' };
+    }
   }
 
   async function loadPengajuan() {
@@ -210,7 +215,7 @@
     const list = document.getElementById('pengajuanList');
     list.innerHTML = '';
 
-    if (data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       list.innerHTML = '<div class="text-center text-muted py-5">Tidak ada pengajuan ditemukan.</div>';
       return;
     }
@@ -233,7 +238,6 @@
   }
 
   async function showDetail(id) {
-    currentDetailId = id; // Simpan ID
     const data = await callAdmin('adminGetPengajuanById', { id });
     if (!data.submission) return;
     const sub = data.submission;
@@ -283,6 +287,7 @@
     html += `</div><hr><h6 class="mb-3">Update Status Keseluruhan</h6>
       <select id="newStatus" class="form-select mb-2">
         <option value="Draft">Draft</option>
+        <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
         <option value="Menunggu Irban">Menunggu Irban</option>
         <option value="Menunggu Inspektur">Menunggu Inspektur</option>
         <option value="Diverifikasi">Diverifikasi</option>
@@ -296,25 +301,31 @@
     new bootstrap.Modal(document.getElementById('detailModal')).show();
   }
 
-  // PERBAIKAN UTAMA: Jangan reload, tutup modal dan refresh list
+  // ===== TANPA reload! Cukup tutup modal & refresh list =====
   async function verifDoc(docId, status) {
     const catatan = document.getElementById('note_' + docId).value;
-    await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
-    
-    // Tutup modal dan refresh list
+    const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
+    if (res.status !== 'success') {
+      alert('Gagal: ' + res.msg);
+      return;
+    }
+    // Tutup modal & refresh list
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
     loadPengajuan();
   }
 
-  // PERBAIKAN UTAMA: Jangan reload, tutup modal dan refresh list
+  // ===== TANPA reload! Cukup tutup modal & refresh list =====
   async function updateStatus(id) {
     const status = document.getElementById('newStatus').value;
     const catatan = document.getElementById('statusNote').value;
-    await callAdmin('adminUpdateStatusPengajuan', { id, status, catatan });
-    
-    // Tutup modal dan refresh list
+    const res = await callAdmin('adminUpdateStatusPengajuan', { id, status, catatan });
+    if (res.status !== 'success') {
+      alert('Gagal: ' + res.msg);
+      return;
+    }
+    // Tutup modal & refresh list
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
@@ -323,13 +334,10 @@
 
   // ===== INISIALISASI SAAT HALAMAN DIMUAT =====
   document.addEventListener('DOMContentLoaded', () => {
-    // Cek apakah sesi masih ada
     if (currentRole && currentUsername) {
-      // Tampilkan dashboard langsung
       document.getElementById('loginBox').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
       
-      // Set role selector sesuai sesi
       if (currentRole === 'irban') {
         document.getElementById('btnIrban').classList.add('active');
         document.getElementById('btnInspektur').classList.remove('active');
@@ -341,7 +349,6 @@
       document.getElementById('roleInfo').innerText = 'Role: ' + (currentRole === 'irban' ? 'Irban' : 'Inspektur') + ' | User: ' + currentUsername;
       loadPengajuan();
     } else {
-      // Tampilkan login
       selectRole('irban');
     }
   });
