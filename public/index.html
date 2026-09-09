@@ -8,7 +8,6 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* TEMA WARNA LEMBUT (Dark Slate) TIDAK SAKIT DI MATA */
     :root {
       --bg-1: #0f2027;
       --bg-2: #203a43;
@@ -32,7 +31,6 @@
       padding: 30px;
     }
 
-    /* ===== LOGIN BOX ===== */
     .login-box { max-width: 450px; margin: 80px auto; background: rgba(15, 32, 39, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.4); animation: fadeUp 0.8s ease; }
     .login-title { text-align: center; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
     .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 0.9rem; }
@@ -46,7 +44,6 @@
     .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(52, 211, 153, 0.5); }
     .error-msg { color: var(--danger); font-size: 0.9rem; text-align: center; margin-top: 10px; min-height: 20px; }
 
-    /* ===== DASHBOARD ===== */
     .dashboard { display: none; animation: fadeUp 0.8s ease; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15, 32, 39, 0.8); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
     .header-title h2 { font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0; }
@@ -62,13 +59,11 @@
     .card-pengajuan:hover { background: rgba(255, 255, 255, 0.15); transform: translateX(5px); border-color: rgba(56, 189, 248, 0.5); }
     .badge-custom { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
 
-    /* ===== MODAL ===== */
     .modal-content { background: linear-gradient(135deg, #101f2c, #1b2a38); border: 1px solid var(--border); border-radius: 20px; color: #fff; }
     .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
     .modal-footer { border-top: 1px solid rgba(255,255,255,0.1); }
     .doc-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05); }
     
-    /* ===== TOMBOL VIEW & VERIFIKASI (SVG) ===== */
     .btn-sm-custom { padding: 6px 12px; font-size: 0.8rem; border-radius: 20px; border: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 5px; }
     .btn-view { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }
     .btn-view:hover { background: #38bdf8; color: #fff; }
@@ -78,7 +73,6 @@
     .btn-reject:hover { background: #fb7185; color: #fff; }
     .btn-sm-custom svg { width: 14px; height: 14px; fill: currentColor; }
 
-    /* ===== VIEWER MODAL ===== */
     .viewer-modal .modal-content { background: #000; border: none; border-radius: 12px; }
     .viewer-modal .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
     .viewer-modal .modal-body { padding: 0; }
@@ -90,7 +84,7 @@
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 <div class="login-box" id="loginBox">
   <div class="login-title">Admin Verifikasi SKBT</div>
   <div class="login-subtitle">Inspektorat Daerah Kabupaten Mahakam Ulu</div>
@@ -112,7 +106,7 @@
   <div class="error-msg" id="loginError"></div>
 </div>
 
-<!-- ================= DASHBOARD ================= -->
+<!-- DASHBOARD -->
 <div class="container dashboard" id="dashboard">
   <div class="header">
     <div class="header-title">
@@ -146,7 +140,7 @@
   <div id="pengajuanList"></div>
 </div>
 
-<!-- ================= MODAL DETAIL ================= -->
+<!-- MODAL DETAIL -->
 <div class="modal fade" id="detailModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -162,7 +156,7 @@
   </div>
 </div>
 
-<!-- ================= MODAL VIEWER ================= -->
+<!-- MODAL VIEWER -->
 <div class="modal fade viewer-modal" id="viewerModal" tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -330,7 +324,6 @@
                 View
               </button>`;
 
-      // HANYA IRBAN YANG BOLEH VERIFIKASI DOKUMEN PER FILE
       if (currentRole === 'irban') {
         html += `
               <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">
@@ -348,7 +341,6 @@
           </div>
           ${doc.verification_note ? `<small class="text-muted d-block mt-2">Catatan: ${doc.verification_note}</small>` : ''}`;
       
-      // Input catatan hanya untuk Irban
       if (currentRole === 'irban') {
         html += `<input type="text" id="note_${doc.id}" class="form-control form-control-sm mt-2" placeholder="Catatan verifikasi (opsional)" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">`;
       }
@@ -356,11 +348,9 @@
       html += `</div>`;
     });
 
-    // ===== UPDATE STATUS KESELURUHAN =====
     html += `</div><hr><h6 class="mb-3">Update Status Keseluruhan</h6>
       <select id="newStatus" class="form-select mb-2">`;
 
-    // DROPDOWN BERBEDA UNTUK IRBAN DAN INSPEKTUR
     if (currentRole === 'irban') {
       html += `
         <option value="Draft">Draft</option>
@@ -382,23 +372,25 @@
 
     document.getElementById('detailBody').innerHTML = html;
     
-    // Gunakan getOrCreateInstance agar tidak ada modal yang tertinggal
     const modalEl = document.getElementById('detailModal');
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
     modalInstance.show();
   }
 
-  // ===== VIEW FILE (Perbaikan: Viewer yang berfungsi) =====
+  // ===== VIEW FILE: Solusi Anti-Download =====
   function viewFile(fileUrl, fileName) {
     const ext = fileName.split('.').pop().toLowerCase();
     let viewerUrl = fileUrl;
 
-    // Gunakan Microsoft Office Viewer untuk file Office
+    // Jika file Office, pakai Microsoft Office Viewer
     if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
         viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
     }
-    // Untuk PDF dan gambar, langsung render di iframe (karena browser modern mendukungnya)
+    // Jika PDF: langsung tampilkan di iframe (browser modern sudah bisa render PDF jika content-type benar)
+    // Jika gambar: langsung tampilkan di iframe
 
+    // Jika masih gagal, tambahkan fallback ke Google Docs Viewer
+    // Kita coba dulu pakai viewer file langsung, jika tidak muncul kita bisa ganti strategi
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
     
@@ -407,7 +399,6 @@
     modalInstance.show();
   }
 
-  // ===== VERIFIKASI DOKUMEN (TANPA MENUTUP MODAL) =====
   async function verifDoc(docId, status) {
     const catatan = document.getElementById('note_' + docId).value;
     const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
@@ -415,10 +406,9 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    showDetail(currentDetailId); // Refresh isi modal, TIDAK menutupnya
+    showDetail(currentDetailId);
   }
 
-  // ===== UPDATE STATUS KESELURUHAN (MENUTUP MODAL) =====
   async function updateStatus(id) {
     const status = document.getElementById('newStatus').value;
     const catatan = document.getElementById('statusNote').value;
@@ -428,7 +418,6 @@
       return;
     }
     
-    // PERBAIKAN: Tutup modal dengan benar menggunakan getOrCreateInstance
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     modal.hide();
@@ -436,7 +425,6 @@
     loadPengajuan();
   }
 
-  // ===== INISIALISASI HALAMAN =====
   document.addEventListener('DOMContentLoaded', () => {
     if (currentRole && currentUsername) {
       document.getElementById('loginBox').style.display = 'none';
