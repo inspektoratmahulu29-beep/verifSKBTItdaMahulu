@@ -8,7 +8,7 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* ===== TEMA WARNA LEMBUT & NYAMAN DI MATA ===== */
+    /* TEMA WARNA LEMBUT (Dark Slate) TIDAK SAKIT DI MATA */
     :root {
       --bg-1: #0f2027;
       --bg-2: #203a43;
@@ -33,10 +33,10 @@
     }
 
     /* ===== LOGIN BOX ===== */
-    .login-box { max-width: 450px; margin: 80px auto; background: rgba(15, 32, 39, 0.85); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: fadeUp 0.8s ease; }
+    .login-box { max-width: 450px; margin: 80px auto; background: rgba(15, 32, 39, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.4); animation: fadeUp 0.8s ease; }
     .login-title { text-align: center; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
     .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 0.9rem; }
-    .role-selector { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 50px; border: 1px solid var(--border); }
+    .role-selector { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 50px; border: 1px solid var(--border); }
     .role-btn { flex: 1; background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 10px; border-radius: 40px; font-weight: 600; transition: all 0.3s; cursor: pointer; }
     .role-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
     .form-control { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; border-radius: 12px; padding: 12px 16px; transition: all 0.3s; }
@@ -48,7 +48,7 @@
 
     /* ===== DASHBOARD ===== */
     .dashboard { display: none; animation: fadeUp 0.8s ease; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15, 32, 39, 0.7); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15, 32, 39, 0.8); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
     .header-title h2 { font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0; }
     .header-title p { color: var(--text-muted); font-size: 0.85rem; margin: 5px 0 0; }
     .btn-outline-light-custom { background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; padding: 10px 20px; border-radius: 50px; transition: all 0.3s; }
@@ -90,7 +90,7 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ================= LOGIN ================= -->
 <div class="login-box" id="loginBox">
   <div class="login-title">Admin Verifikasi SKBT</div>
   <div class="login-subtitle">Inspektorat Daerah Kabupaten Mahakam Ulu</div>
@@ -112,7 +112,7 @@
   <div class="error-msg" id="loginError"></div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- ================= DASHBOARD ================= -->
 <div class="container dashboard" id="dashboard">
   <div class="header">
     <div class="header-title">
@@ -146,7 +146,7 @@
   <div id="pengajuanList"></div>
 </div>
 
-<!-- MODAL DETAIL -->
+<!-- ================= MODAL DETAIL ================= -->
 <div class="modal fade" id="detailModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -162,7 +162,7 @@
   </div>
 </div>
 
-<!-- MODAL VIEWER -->
+<!-- ================= MODAL VIEWER ================= -->
 <div class="modal fade viewer-modal" id="viewerModal" tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -290,6 +290,7 @@
     if (!data.submission) return;
     const sub = data.submission;
     const docs = data.documents;
+    
     let html = `
       <div class="row mb-3">
         <div class="col-md-6"><strong>Nomor:</strong> ${sub.nomor_pengajuan}</div>
@@ -314,6 +315,7 @@
     docs.forEach(doc => {
       const status = doc.verification_status || 'pending';
       const badge = status === 'approved' ? 'bg-success' : (status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark');
+      
       html += `
         <div class="doc-item">
           <div class="d-flex justify-content-between align-items-center">
@@ -326,7 +328,11 @@
               <button class="btn-sm-custom btn-view" onclick="viewFile('${doc.file_url}', '${doc.file_name}')">
                 <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                 View
-              </button>
+              </button>`;
+
+      // HANYA IRBAN YANG BOLEH VERIFIKASI DOKUMEN PER FILE
+      if (currentRole === 'irban') {
+        html += `
               <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                 Setujui
@@ -334,23 +340,42 @@
               <button class="btn-sm-custom btn-reject" onclick="verifDoc(${doc.id}, 'rejected')">
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                 Tolak
-              </button>
+              </button>`;
+      }
+
+      html += `
             </div>
           </div>
-          ${doc.verification_note ? `<small class="text-muted d-block mt-2">Catatan: ${doc.verification_note}</small>` : ''}
-          <input type="text" id="note_${doc.id}" class="form-control form-control-sm mt-2" placeholder="Catatan verifikasi (opsional)" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">
-        </div>`;
+          ${doc.verification_note ? `<small class="text-muted d-block mt-2">Catatan: ${doc.verification_note}</small>` : ''}`;
+      
+      // Input catatan hanya untuk Irban
+      if (currentRole === 'irban') {
+        html += `<input type="text" id="note_${doc.id}" class="form-control form-control-sm mt-2" placeholder="Catatan verifikasi (opsional)" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">`;
+      }
+
+      html += `</div>`;
     });
 
+    // ===== UPDATE STATUS KESELURUHAN =====
     html += `</div><hr><h6 class="mb-3">Update Status Keseluruhan</h6>
-      <select id="newStatus" class="form-select mb-2">
+      <select id="newStatus" class="form-select mb-2">`;
+
+    // DROPDOWN BERBEDA UNTUK IRBAN DAN INSPEKTUR
+    if (currentRole === 'irban') {
+      html += `
         <option value="Draft">Draft</option>
         <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
         <option value="Menunggu Irban">Menunggu Irban</option>
-        <option value="Menunggu Inspektur">Menunggu Inspektur</option>
+        <option value="Menunggu Inspektur">Menunggu Inspektur</option>`;
+    } else if (currentRole === 'inspektur') {
+      html += `
+        <option value="Menunggu Inspektur" selected>Menunggu Inspektur</option>
         <option value="Diverifikasi">Diverifikasi</option>
         <option value="Ditolak">Ditolak</option>
-        <option value="Selesai">Selesai</option>
+        <option value="Selesai">Selesai</option>`;
+    }
+
+    html += `
       </select>
       <input type="text" id="statusNote" class="form-control mb-2" placeholder="Catatan untuk pemohon (opsional)">
       <button class="btn-gradient" style="width:auto; margin-top:10px;" onclick="updateStatus(${sub.id})">Update Status</button>`;
@@ -363,18 +388,16 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE (Perbaikan: Gunakan Viewer yang benar-benar berfungsi) =====
+  // ===== VIEW FILE (Perbaikan: Viewer yang berfungsi) =====
   function viewFile(fileUrl, fileName) {
-    // Dapatkan ekstensi file
     const ext = fileName.split('.').pop().toLowerCase();
-    let viewerUrl = fileUrl; // Default: langsung buka file
+    let viewerUrl = fileUrl;
 
-    // Jika file Office (Word, Excel, PPT), gunakan Microsoft Office Viewer
+    // Gunakan Microsoft Office Viewer untuk file Office
     if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
         viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
     }
-    // Jika PDF atau Gambar, biarkan langsung di-render oleh browser (via iframe)
-    // (Browser modern otomatis menampilkan PDF dan gambar di iframe)
+    // Untuk PDF dan gambar, langsung render di iframe (karena browser modern mendukungnya)
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
