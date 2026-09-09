@@ -15,12 +15,32 @@ function jsonResponse(data, status = 200) {
 async function sendStatusEmail(env, submission, newStatus, catatan = '') {
   if (!env.RESEND_API_KEY || !submission.gmail) return;
   try {
+    // Tentukan subjek dan isi email berdasarkan status
+    let subject = 'Update Status Pengajuan SKBT: ' + submission.nomor_pengajuan;
+    let headline = 'Update Status Pengajuan SKBT';
+    let message = 'Status pengajuan Anda telah diperbarui.';
+
+    if (newStatus === 'Diverifikasi' || newStatus === 'Selesai') {
+      subject = 'PERSETUJUAN SKBT - ' + submission.nomor_pengajuan;
+      headline = 'PERSETUJUAN SKBT';
+      message = 'Selamat! Pengajuan SKBT Anda telah <b>DISETUJUI</b>. Silakan unduh surat keterangan Anda.';
+    } else if (newStatus === 'Ditolak') {
+      subject = 'Penolakan Pengajuan SKBT - ' + submission.nomor_pengajuan;
+      headline = 'PENOLAKAN SKBT';
+      message = 'Mohon maaf, pengajuan SKBT Anda <b>DITOLAK</b>.';
+    } else {
+      subject = 'Update Status Pengajuan SKBT - ' + submission.nomor_pengajuan;
+      headline = 'Update Status Pengajuan SKBT';
+      message = 'Status pengajuan Anda sekarang: <b>' + newStatus + '</b>';
+    }
+
     const emailBody = `<div style="font-family: Arial, sans-serif; background: #f4f7fb; padding: 20px;">
-        <h2 style="color: #03045e;">Update Status Pengajuan SKBT</h2>
-        <p>Nomor: <b>${submission.nomor_pengajuan}</b></p>
-        <p>Status baru: <b style="color: #0077b6;">${newStatus}</b></p>
-        ${catatan ? `<p>Catatan: ${catatan}</p>` : ''}
-        <p>Silakan cek status pengajuan Anda di portal.</p>
+        <h2 style="color: #03045e;">${headline}</h2>
+        <p>Nomor Pengajuan: <b>${submission.nomor_pengajuan}</b></p>
+        <p>${message}</p>
+        ${catatan ? `<p><strong>Catatan:</strong> ${catatan}</p>` : ''}
+        <hr>
+        <p style="font-size: 12px; color: #888;">Dokumen Anda dapat diunduh melalui portal pengajuan SKBT.</p>
       </div>`;
 
     await fetch('https://api.resend.com/emails', {
@@ -29,7 +49,7 @@ async function sendStatusEmail(env, submission, newStatus, catatan = '') {
       body: JSON.stringify({
         from: 'Pengajuan SKBT <onboarding@resend.dev>',
         to: submission.gmail,
-        subject: 'Update Status Pengajuan SKBT: ' + submission.nomor_pengajuan,
+        subject: subject,
         html: emailBody
       })
     });
@@ -69,18 +89,15 @@ export const onRequest = async ({ request, env }) => {
       case 'adminLogin': {
         const { username, password } = params;
 
-        // Cek apakah Environment Variable sudah diset
         if (!env.IRBAN_USERNAME || !env.IRBAN_PASSWORD || !env.INSPEKTUR_USERNAME || !env.INSPEKTUR_PASSWORD) {
           console.error('Environment variables untuk login belum diset!');
           return jsonResponse({ status: 'error', msg: 'Server belum dikonfigurasi dengan benar' });
         }
 
-        // Akun Irban dari Environment Variables
         if (username === env.IRBAN_USERNAME && password === env.IRBAN_PASSWORD) {
           return jsonResponse({ status: 'success', role: 'irban', msg: 'Login berhasil sebagai Irban' });
         }
 
-        // Akun Inspektur dari Environment Variables
         if (username === env.INSPEKTUR_USERNAME && password === env.INSPEKTUR_PASSWORD) {
           return jsonResponse({ status: 'success', role: 'inspektur', msg: 'Login berhasil sebagai Inspektur' });
         }
