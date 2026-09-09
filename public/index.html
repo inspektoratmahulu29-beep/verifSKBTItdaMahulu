@@ -135,6 +135,7 @@
   // ===== SESI LOGIN (TIDAK LOGOUT SAAT REFRESH) =====
   let currentRole = sessionStorage.getItem('adminRole') || '';
   let currentUsername = sessionStorage.getItem('adminUser') || '';
+  let currentDetailId = null; // SIMPAN ID YANG SEDANG DIBUKA
 
   function selectRole(role) {
     currentRole = role;
@@ -161,7 +162,6 @@
     .then(r => r.json())
     .then(res => {
       if (res.status === 'success') {
-        // Simpan sesi
         sessionStorage.setItem('adminRole', res.role);
         sessionStorage.setItem('adminUser', username);
         
@@ -180,7 +180,6 @@
   }
 
   function logout() {
-    // Hapus sesi
     sessionStorage.removeItem('adminRole');
     sessionStorage.removeItem('adminUser');
     
@@ -238,6 +237,7 @@
   }
 
   async function showDetail(id) {
+    currentDetailId = id; // SIMPAN ID
     const data = await callAdmin('adminGetPengajuanById', { id });
     if (!data.submission) return;
     const sub = data.submission;
@@ -298,10 +298,16 @@
       <button class="btn-gradient" style="width:auto; margin-top:10px;" onclick="updateStatus(${sub.id})">Update Status</button>`;
 
     document.getElementById('detailBody').innerHTML = html;
-    new bootstrap.Modal(document.getElementById('detailModal')).show();
+    
+    // Jika modal belum terbuka, buka. Jika sudah, biarkan tetap terbuka.
+    const modalEl = document.getElementById('detailModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (!modalInstance) {
+      new bootstrap.Modal(modalEl).show();
+    }
   }
 
-  // ===== TANPA reload! Cukup tutup modal & refresh list =====
+  // ===== PERBAIKAN UTAMA 1: JANGAN TUTUP MODAL, HANYA REFRESH ISI MODAL =====
   async function verifDoc(docId, status) {
     const catatan = document.getElementById('note_' + docId).value;
     const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
@@ -309,14 +315,11 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    // Tutup modal & refresh list
-    const modalEl = document.getElementById('detailModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
-    loadPengajuan();
+    // Refresh isi modal dengan data terbaru, TANPA menutupnya
+    showDetail(currentDetailId);
   }
 
-  // ===== TANPA reload! Cukup tutup modal & refresh list =====
+  // ===== PERBAIKAN UTAMA 2: TUTUP MODAL HANYA SETELAH UPDATE STATUS =====
   async function updateStatus(id) {
     const status = document.getElementById('newStatus').value;
     const catatan = document.getElementById('statusNote').value;
@@ -325,10 +328,11 @@
       alert('Gagal: ' + res.msg);
       return;
     }
-    // Tutup modal & refresh list
+    // Baru tutup modal dan refresh list setelah update status selesai
     const modalEl = document.getElementById('detailModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     if (modal) modal.hide();
+    
     loadPengajuan();
   }
 
