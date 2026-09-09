@@ -127,7 +127,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <iframe id="viewerFrame" src="about:blank" allowfullscreen></iframe>
+        <iframe id="viewerFrame" src="" allowfullscreen></iframe>
       </div>
     </div>
   </div>
@@ -340,27 +340,14 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE - PERBAIKAN UTAMA: RESET IFRAME DULU, BARU LOAD URL =====
+  // ===== VIEW FILE - PERBAIKAN: Gunakan Google Docs Viewer untuk SEMUA file =====
   function viewFile(fileUrl, fileName) {
-    const ext = fileName.split('.').pop().toLowerCase();
-    let viewerUrl = fileUrl;
-
-    // Untuk file Office (xlsx, xls, docx, dll), gunakan Microsoft Office Viewer
-    if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
-        viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-    }
-    // Untuk PDF/Gambar, browser langsung render (asalkan Content-Type sudah benar di R2)
-
-    // RESET IFRAME KE about:blank TERLEBIH DAHULU (MENCEGAH STUCK)
-    const viewerFrame = document.getElementById('viewerFrame');
-    viewerFrame.src = 'about:blank';
-    
-    // Setelah reset, baru set URL baru
-    setTimeout(() => {
-      viewerFrame.src = viewerUrl;
-    }, 50);
+    // Gunakan Google Docs Viewer agar browser tidak memuat langsung dari R2
+    // Google Docs Viewer mampu menampilkan PDF, gambar, dan file Office
+    const viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
 
     document.getElementById('viewerTitle').innerText = fileName;
+    document.getElementById('viewerFrame').src = viewerUrl;
     
     const modalEl = document.getElementById('viewerModal');
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
