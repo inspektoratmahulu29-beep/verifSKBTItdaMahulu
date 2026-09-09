@@ -15,7 +15,6 @@ function jsonResponse(data, status = 200) {
 async function sendStatusEmail(env, submission, newStatus, catatan = '') {
   if (!env.RESEND_API_KEY || !submission.gmail) return;
   try {
-    // Tentukan subjek dan isi email berdasarkan status
     let subject = 'Update Status Pengajuan SKBT: ' + submission.nomor_pengajuan;
     let headline = 'Update Status Pengajuan SKBT';
     let message = 'Status pengajuan Anda telah diperbarui.';
@@ -85,14 +84,8 @@ export const onRequest = async ({ request, env }) => {
 
   try {
     switch (action) {
-      // ============ LOGIN ADMIN (IRBAN & INSPEKTUR) - VIA ENV ============
       case 'adminLogin': {
         const { username, password } = params;
-
-        if (!env.IRBAN_USERNAME || !env.IRBAN_PASSWORD || !env.INSPEKTUR_USERNAME || !env.INSPEKTUR_PASSWORD) {
-          console.error('Environment variables untuk login belum diset!');
-          return jsonResponse({ status: 'error', msg: 'Server belum dikonfigurasi dengan benar' });
-        }
 
         if (username === env.IRBAN_USERNAME && password === env.IRBAN_PASSWORD) {
           return jsonResponse({ status: 'success', role: 'irban', msg: 'Login berhasil sebagai Irban' });
@@ -105,7 +98,6 @@ export const onRequest = async ({ request, env }) => {
         return jsonResponse({ status: 'error', msg: 'Username atau password salah' });
       }
 
-      // ============ AMBIL SEMUA PENGAJUAN ============
       case 'adminGetAllPengajuan': {
         const { status } = params;
         let query = "SELECT * FROM skbt_submissions";
@@ -118,7 +110,6 @@ export const onRequest = async ({ request, env }) => {
         return jsonResponse(results);
       }
 
-      // ============ AMBIL DETAIL PENGAJUAN ============
       case 'adminGetPengajuanById': {
         const { id } = params;
         const sub = await env.DB.prepare("SELECT * FROM skbt_submissions WHERE id = ?").bind(id).first();
@@ -126,21 +117,16 @@ export const onRequest = async ({ request, env }) => {
         return jsonResponse({ submission: sub, documents: docs.results });
       }
 
-      // ============ UPDATE STATUS PENGAJUAN ============
       case 'adminUpdateStatusPengajuan': {
         const { id, status, catatan } = params;
         const sub = await env.DB.prepare("SELECT * FROM skbt_submissions WHERE id = ?").bind(id).first();
         if (!sub) return jsonResponse({ status: 'error', msg: 'Pengajuan tidak ditemukan' });
 
         await env.DB.prepare("UPDATE skbt_submissions SET status_verifikasi = ? WHERE id = ?").bind(status, id).run();
-
-        // Kirim email ke pemohon
         await sendStatusEmail(env, sub, status, catatan);
-
         return jsonResponse({ status: 'success', msg: 'Status berhasil diupdate' });
       }
 
-      // ============ UPDATE VERIFIKASI PER DOKUMEN ============
       case 'adminUpdateDokumenVerifikasi': {
         const { doc_id, status, catatan } = params;
         if (!['pending', 'approved', 'rejected'].includes(status)) {
