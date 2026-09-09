@@ -339,17 +339,14 @@
     modalInstance.show();
   }
 
-  // ===== VIEW FILE (PERBAIKAN: TANPA FETCH, LANGSUNG PAKAI IFRAME) =====
+  // ===== VIEW FILE (TANPA FETCH - LANGSUNG IFRAME) =====
   function viewFile(fileUrl, fileName) {
     const ext = fileName.split('.').pop().toLowerCase();
     let viewerUrl = fileUrl;
 
-    // Untuk file Office, gunakan Microsoft Office Viewer
     if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
         viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
     }
-    // Untuk PDF dan Gambar, biarkan browser menampilkan langsung di iframe
-    // (Karena Content-Type sudah benar dari skbtHandler.js)
 
     document.getElementById('viewerTitle').innerText = fileName;
     document.getElementById('viewerFrame').src = viewerUrl;
