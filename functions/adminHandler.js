@@ -49,7 +49,7 @@ async function ensureSchema(env) {
     await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_skbt_documents_submission ON skbt_documents(submission_id)').run();
     await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_skbt_documents_code ON skbt_documents(submission_id, dokumen_code)').run();
     await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_skbt_submissions_status ON skbt_submissions(status_verifikasi)').run();
-    await env.DB.prepare("UPDATE skbt_submissions SET status_verifikasi = 'Menunggu Sekretaris Inspektorat', current_level = 1 WHERE status_verifikasi IN ('Menunggu Irban', 'Menunggu Verifikasi Irban')").run();
+    await env.DB.prepare("UPDATE skbt_submissions SET status_verifikasi = REPLACE(REPLACE(status_verifikasi, 'Irban', 'Sekretaris Inspektorat'), 'Verifikasi Sekretaris Inspektorat Sekretaris Inspektorat', 'Verifikasi Sekretaris Inspektorat'), current_level = CASE WHEN status_verifikasi LIKE '%Sekretaris Inspektorat%' THEN 1 ELSE current_level END WHERE status_verifikasi LIKE '%Irban%'").run();
   })().catch(error => { schemaReadyPromise = null; throw error; });
   return schemaReadyPromise;
 }
