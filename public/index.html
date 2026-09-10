@@ -1,429 +1,64 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Verifikasi SKBT</title>
+  <title>Verifikasi SKBT — Inspektorat Mahakam Ulu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    :root {
-      --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364;
-      --text: #f1f5f9; --text-muted: #94a3b8;
-      --accent: #38bdf8; --success: #34d399; --danger: #fb7185;
-      --border: rgba(255,255,255,0.15);
-    }
-    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); color: var(--text); min-height: 100vh; padding: 30px; }
-    .login-box { max-width: 450px; margin: 80px auto; background: rgba(15,32,39,0.95); border-radius: 20px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.4); animation: fadeUp .8s ease; }
-    .login-title { text-align: center; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
-    .login-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: .9rem; }
-    .role-selector { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(0,0,0,.3); padding: 8px; border-radius: 50px; border: 1px solid var(--border); }
-    .role-btn { flex: 1; background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 10px; border-radius: 40px; font-weight: 600; transition: all .3s; cursor: pointer; }
-    .role-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(56,189,248,.4); }
-    .form-control { background: rgba(255,255,255,.1); border: 1px solid var(--border); color: #fff; border-radius: 12px; padding: 12px 16px; }
-    .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(56,189,248,.2); }
-    .btn-gradient { background: linear-gradient(135deg, var(--accent), var(--success)); border: none; color: #fff; font-weight: 700; padding: 14px 32px; border-radius: 50px; width: 100%; margin-top: 10px; }
-    .btn-gradient:hover { transform: translateY(-2px); }
-    .dashboard { display: none; animation: fadeUp .8s ease; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: rgba(15,32,39,.8); border-radius: 20px; padding: 15px 25px; border: 1px solid var(--border); }
-    .header-title h2 { font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0; }
-    .header-title p { color: var(--text-muted); font-size: .85rem; margin: 5px 0 0; }
-    .btn-outline-light-custom { background: transparent; border: 1px solid var(--border); color: #fff; padding: 10px 20px; border-radius: 50px; }
-    .filter-box { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-    .form-select { background: rgba(255,255,255,.1); border: 1px solid var(--border); color: #fff; border-radius: 12px; padding: 10px 15px; }
-    .form-select option { background: #0f2027; color: #fff; }
-    .card-pengajuan { background: rgba(255,255,255,.08); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; transition: all .3s; cursor: pointer; }
-    .card-pengajuan:hover { background: rgba(255,255,255,.15); transform: translateX(5px); }
-    .modal-content { background: linear-gradient(135deg, #101f2c, #1b2a38); border: 1px solid var(--border); border-radius: 20px; color: #fff; }
-    .doc-item { border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,.05); }
-    .btn-sm-custom { padding: 6px 12px; font-size: .8rem; border-radius: 20px; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .3s; }
-    .btn-view { background: rgba(56,189,248,.15); color: var(--accent); border: 1px solid var(--accent); }
-    .btn-view:hover { background: var(--accent); color: #fff; }
-    .btn-approve { background: rgba(52,211,153,.15); color: var(--success); border: 1px solid var(--success); }
-    .btn-approve:hover { background: var(--success); color: #fff; }
-    .btn-reject { background: rgba(251,113,133,.15); color: var(--danger); border: 1px solid var(--danger); }
-    .btn-reject:hover { background: var(--danger); color: #fff; }
-    .btn-sm-custom svg { width: 14px; height: 14px; fill: currentColor; }
-    .viewer-modal .modal-content { background: #000; border: none; border-radius: 12px; }
-    .viewer-modal iframe { width: 100%; height: 85vh; border: none; background: #fff; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    *{box-sizing:border-box} :root{--bg:#07192d;--bg2:#143a67;--surface:rgba(255,255,255,.07);--border:rgba(255,255,255,.14);--text:#f7fbff;--muted:#9fb5d1;--accent:#63d7c1;--accent2:#65aee0;--gold:#f0cc77;--danger:#ff7f91}
+    body{margin:0;min-height:100vh;padding:24px;font-family:Inter,Segoe UI,system-ui,sans-serif;color:var(--text);background:radial-gradient(circle at 10% 20%,rgba(99,215,193,.14),transparent 28%),linear-gradient(135deg,var(--bg),var(--bg2) 55%,#4f95bb);background-attachment:fixed}.container-app{max-width:1220px;margin:auto}
+    .login,.header,.filter,.card,.modal-content{background:rgba(7,25,45,.78);backdrop-filter:blur(16px);border:1px solid var(--border);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+    .login{max-width:480px;margin:80px auto;padding:34px;border-radius:24px}.brand-mini{text-align:center;font-weight:850;font-size:1.55rem}.brand-sub{text-align:center;color:var(--muted);font-size:.86rem;margin:6px 0 28px}.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:7px;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:999px;margin-bottom:20px}.role-btn{border:0;background:transparent;color:var(--muted);padding:10px 12px;border-radius:999px;font-weight:800}.role-btn.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff}.form-label{color:#b9cae0;font-size:.82rem;font-weight:700}.form-control,.form-select{background:rgba(255,255,255,.07);border:1px solid var(--border);color:#fff;border-radius:12px;padding:11px 14px}.form-control:focus,.form-select:focus{background:rgba(255,255,255,.09);color:#fff;border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,215,193,.12)}.form-select option{background:#173a63}.btn-gradient{background:linear-gradient(135deg,var(--accent2),var(--accent));border:0;color:#fff;font-weight:850;border-radius:999px;padding:12px 20px}.error-msg{min-height:24px;text-align:center;color:#ff9aaa;margin-top:12px;font-size:.83rem}
+    #dashboard{display:none}.header{padding:18px 20px;border-radius:20px;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}.header h2{font-size:1.42rem;font-weight:850;margin:0}.header p{margin:4px 0 0;color:var(--muted);font-size:.82rem}.btn-outline{background:transparent;color:#fff;border:1px solid var(--border);border-radius:999px;padding:9px 16px}.btn-outline:hover{border-color:var(--accent);background:rgba(255,255,255,.05);color:#fff}
+    .filter{padding:18px;border-radius:18px;margin-bottom:18px}.card-pengajuan{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:17px;padding:16px;margin-bottom:10px;cursor:pointer;transition:.2s}.card-pengajuan:hover{background:rgba(255,255,255,.09);transform:translateY(-1px);border-color:rgba(99,215,193,.28)}.number{font-weight:850}.meta{color:#a8bdd6;font-size:.82rem}.badge-custom{border-radius:999px;padding:7px 10px;font-size:.73rem}.status-warning{background:rgba(240,204,119,.12);color:#f4d994;border:1px solid rgba(240,204,119,.25)}.status-success{background:rgba(99,215,193,.12);color:#79e0cb;border:1px solid rgba(99,215,193,.25)}.status-danger{background:rgba(255,127,145,.12);color:#ff92a1;border:1px solid rgba(255,127,145,.25)}
+    .modal-content{border-radius:22px;color:#fff}.modal-header,.modal-footer{border-color:var(--border)}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.info-card{padding:12px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)}.info-card label{display:block;color:#8ea8c5;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}.info-card strong{font-size:.9rem}.doc-item{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045);border-radius:14px;padding:13px;margin-bottom:9px}.doc-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.btn-sm-custom{padding:6px 10px;font-size:.74rem;border-radius:999px;background:transparent}.btn-view{border:1px solid var(--accent2);color:#7ac4ec}.btn-approve{border:1px solid var(--accent);color:#74e1cc}.btn-reject{border:1px solid var(--danger);color:#ff95a3}.small-note{font-size:.76rem;color:#92abc7}.gdocs-box{padding:13px 14px;border-radius:15px;background:rgba(99,215,193,.06);border:1px solid rgba(99,215,193,.18);margin:14px 0}.link-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.link-pill{display:inline-flex;align-items:center;text-decoration:none;color:#fff;border:1px solid var(--border);padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.045);font-size:.76rem}.link-pill:hover{color:#fff;background:rgba(99,215,193,.1)}
+    .viewer-modal .modal-content{background:#000;border:none}.viewer-modal iframe{width:100%;height:83vh;border:0;background:#fff}.hidden{display:none!important}@media(max-width:760px){body{padding:12px}.header{flex-direction:column;align-items:flex-start}.detail-grid{grid-template-columns:1fr}.role-selector{grid-template-columns:1fr}.doc-actions{justify-content:flex-start}}
   </style>
 </head>
 <body>
+<div class="container-app">
+  <div class="login" id="loginBox">
+    <div class="brand-mini">Admin Verifikasi SKBT</div><div class="brand-sub">Inspektorat Daerah Kabupaten Mahakam Ulu</div>
+    <div class="role-selector"><button class="role-btn active" id="btnSekretaris" onclick="selectRole('sekretaris')">Sekretaris Inspektorat</button><button class="role-btn" id="btnInspektur" onclick="selectRole('inspektur')">Inspektur</button></div>
+    <div class="mb-3"><label class="form-label">Username</label><input id="usernameInput" class="form-control" placeholder="Username Sekretaris/Inspektur"></div>
+    <div class="mb-3"><label class="form-label">Password</label><input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password"></div>
+    <button class="btn-gradient w-100" onclick="login()">Masuk</button><div class="error-msg" id="loginError"></div>
+  </div>
 
-<!-- LOGIN -->
-<div class="login-box" id="loginBox">
-  <div class="login-title">Admin Verifikasi SKBT</div>
-  <div class="login-subtitle">Inspektorat Daerah Kabupaten Mahakam Ulu</div>
-  <div class="role-selector">
-    <button class="role-btn active" id="btnIrban" onclick="selectRole('irban')">Irban</button>
-    <button class="role-btn" id="btnInspektur" onclick="selectRole('inspektur')">Inspektur</button>
-  </div>
-  <div class="mb-3">
-    <label class="form-label" style="color:#94a3b8;">Username</label>
-    <input type="text" id="usernameInput" class="form-control" placeholder="Masukkan username">
-  </div>
-  <div class="mb-3">
-    <label class="form-label" style="color:#94a3b8;">Password</label>
-    <input type="password" id="passwordInput" class="form-control" placeholder="Masukkan password">
-  </div>
-  <button class="btn-gradient" onclick="login()">Masuk</button>
-  <div class="error-msg" id="loginError"></div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="container dashboard" id="dashboard">
-  <div class="header">
-    <div class="header-title">
-      <h2>Dashboard Verifikasi SKBT</h2>
-      <p id="roleInfo">Role: -</p>
-    </div>
-    <button class="btn-outline-light-custom" onclick="logout()">Keluar</button>
-  </div>
-  <div class="filter-box">
-    <div class="row g-3">
-      <div class="col-md-6">
-        <label style="color:#94a3b8;">Filter Status</label>
-        <select id="filterStatus" class="form-select mt-2" onchange="loadPengajuan()">
-          <option value="all">Semua Status</option>
-          <option value="Draft">Draft</option>
-          <option value="Sedang Verifikasi">Sedang Verifikasi</option>
-          <option value="Diverifikasi oleh Irban">Diverifikasi oleh Irban</option>
-          <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
-          <option value="Disetujui oleh Inspektur">Disetujui oleh Inspektur</option>
-          <option value="Ditolak">Ditolak</option>
-        </select>
-      </div>
-      <div class="col-md-6 d-flex align-items-end">
-        <button class="btn-outline-light-custom w-100" onclick="loadPengajuan()">Refresh Data</button>
-      </div>
-    </div>
-  </div>
-  <div id="pengajuanList"></div>
-</div>
-
-<!-- MODAL DETAIL -->
-<div class="modal fade" id="detailModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Detail Pengajuan</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="detailBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
+  <div id="dashboard">
+    <div class="header"><div><h2>Dashboard Verifikasi SKBT</h2><p id="roleInfo">Role: -</p></div><button class="btn-outline" onclick="logout()">Keluar</button></div>
+    <div class="filter"><div class="row g-2 align-items-end"><div class="col-md-6"><label class="form-label">Filter Status</label><select id="filterStatus" class="form-select" onchange="loadPengajuan()"><option value="all">Semua Status</option><option>Draft</option><option>Sedang Verifikasi</option><option>Menunggu Sekretaris Inspektorat</option><option>Diverifikasi oleh Sekretaris Inspektorat</option><option>Menunggu Persetujuan Inspektur</option><option>Disetujui oleh Inspektur</option><option>Ditolak</option></select></div><div class="col-md-6"><button class="btn-outline w-100" onclick="loadPengajuan()">↻ &nbsp;Refresh Data</button></div></div></div>
+    <div id="pengajuanList"></div>
   </div>
 </div>
 
-<!-- MODAL VIEWER -->
-<div class="modal fade viewer-modal" id="viewerModal" tabindex="-1">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="viewerTitle">View File</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <iframe id="viewerFrame" src="" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
+<div class="modal fade" id="detailModal" tabindex="-1"><div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Detail Pengajuan</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body" id="detailBody"></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
+<div class="modal fade viewer-modal" id="viewerModal" tabindex="-1"><div class="modal-dialog modal-xl modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="viewerTitle">View File</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-0"><iframe id="viewerFrame" src="" allowfullscreen></iframe></div></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const API = '/adminHandler?action=';
-  let currentRole = sessionStorage.getItem('adminRole') || '';
-  let currentUsername = sessionStorage.getItem('adminUser') || '';
-  let currentDetailId = null;
-
-  function selectRole(role) {
-    currentRole = role;
-    document.getElementById('btnIrban').classList.toggle('active', role === 'irban');
-    document.getElementById('btnInspektur').classList.toggle('active', role === 'inspektur');
-  }
-
-  function login() {
-    const username = document.getElementById('usernameInput').value.trim();
-    const password = document.getElementById('passwordInput').value;
-    const errorMsg = document.getElementById('loginError');
-    errorMsg.innerText = '';
-
-    if (!currentRole) {
-      errorMsg.innerText = 'Pilih role terlebih dahulu!';
-      return;
-    }
-
-    fetch(API + 'adminLogin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === 'success') {
-        sessionStorage.setItem('adminRole', res.role);
-        sessionStorage.setItem('adminUser', username);
-        currentUsername = username;
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('roleInfo').innerText = 'Role: ' + (currentRole === 'irban' ? 'Irban' : 'Inspektur') + ' | User: ' + currentUsername;
-        loadPengajuan();
-      } else {
-        errorMsg.innerText = res.msg;
-      }
-    })
-    .catch(err => { errorMsg.innerText = 'Koneksi error, coba lagi.'; });
-  }
-
-  function logout() {
-    sessionStorage.removeItem('adminRole');
-    sessionStorage.removeItem('adminUser');
-    currentRole = '';
-    currentUsername = '';
-    document.getElementById('usernameInput').value = '';
-    document.getElementById('passwordInput').value = '';
-    document.getElementById('loginBox').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('loginError').innerText = '';
-    document.getElementById('btnIrban').classList.add('active');
-    document.getElementById('btnInspektur').classList.remove('active');
-  }
-
-  async function callAdmin(action, params = {}) {
-    try {
-      const res = await fetch(API + action, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
-      });
-      return await res.json();
-    } catch (e) {
-      console.error('Fetch error:', e);
-      return { status: 'error', msg: 'Koneksi ke server gagal' };
-    }
-  }
-
-  async function loadPengajuan() {
-    const status = document.getElementById('filterStatus').value;
-    const data = await callAdmin('adminGetAllPengajuan', { status });
-    const list = document.getElementById('pengajuanList');
-    list.innerHTML = '';
-
-    if (!Array.isArray(data) || data.length === 0) {
-      list.innerHTML = '<div class="text-center text-muted py-5">Tidak ada pengajuan ditemukan.</div>';
-      return;
-    }
-
-    data.forEach(item => {
-      let badgeClass = 'bg-warning text-dark';
-      if (item.status_verifikasi === 'Ditolak') badgeClass = 'bg-danger';
-      else if (item.status_verifikasi === 'Disetujui oleh Inspektur' || item.status_verifikasi === 'Diverifikasi oleh Irban' || item.status_verifikasi === 'Diverifikasi' || item.status_verifikasi === 'Selesai') badgeClass = 'bg-success';
-      
-      list.innerHTML += `
-        <div class="card-pengajuan" onclick="showDetail(${item.id})">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="mb-1" style="color:#fff;">${item.nomor_pengajuan}</h6>
-              <p class="mb-1"><strong style="color:#94a3b8;">${item.nama_pemohon}</strong> - ${item.unit_kerja}</p>
-              <small style="color:#64748b;">${item.created_at || ''}</small>
-            </div>
-            <span class="badge ${badgeClass} badge-custom">${item.status_verifikasi}</span>
-          </div>
-        </div>`;
-    });
-  }
-
-  async function showDetail(id) {
-    currentDetailId = id;
-    const data = await callAdmin('adminGetPengajuanById', { id });
-    if (!data.submission) return;
-    const sub = data.submission;
-    const docs = data.documents;
-    
-    let html = `
-      <div class="row mb-3">
-        <div class="col-md-6"><strong>Nomor:</strong> ${sub.nomor_pengajuan}</div>
-        <div class="col-md-6"><strong>Status:</strong> <span class="badge bg-info text-dark">${sub.status_verifikasi}</span></div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6"><strong>Nama:</strong> ${sub.nama_pemohon}</div>
-        <div class="col-md-6"><strong>NIP:</strong> ${sub.nip || '-'}</div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6"><strong>Jabatan:</strong> ${sub.jabatan || '-'}</div>
-        <div class="col-md-6"><strong>Unit Kerja:</strong> ${sub.unit_kerja}</div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6"><strong>No HP:</strong> ${sub.nomor_hp || '-'}</div>
-        <div class="col-md-6"><strong>Email:</strong> ${sub.gmail || '-'}</div>
-      </div>
-      <hr>
-      <h6 class="mb-3">Dokumen</h6>
-      <div id="docList">`;
-
-    docs.forEach(doc => {
-      const status = doc.verification_status || 'pending';
-      let badge = 'bg-warning text-dark';
-      if (status === 'approved') badge = 'bg-success';
-      else if (status === 'rejected') badge = 'bg-danger';
-      
-      html += `
-        <div class="doc-item">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <a href="${doc.file_url}" target="_blank" style="color:#38bdf8; text-decoration:none;">${doc.file_name}</a>
-              <br><small style="color:#94a3b8;">${doc.nama_dokumen}</small>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge ${badge}">${status}</span>
-              <button class="btn-sm-custom btn-view" onclick="viewFile('${doc.file_url}', '${doc.file_name}')">
-                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                View
-              </button>`;
-
-      // Hanya Irban yang bisa verifikasi dokumen per file
-      if (currentRole === 'irban') {
-        html += `
-              <button class="btn-sm-custom btn-approve" onclick="verifDoc(${doc.id}, 'approved')">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                Setujui
-              </button>
-              <button class="btn-sm-custom btn-reject" onclick="verifDoc(${doc.id}, 'rejected')">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                Tolak
-              </button>`;
-      }
-
-      html += `
-            </div>
-          </div>
-          ${doc.verification_note ? `<small class="text-muted d-block mt-2">Catatan: ${doc.verification_note}</small>` : ''}`;
-      
-      if (currentRole === 'irban') {
-        html += `<input type="text" id="note_${doc.id}" class="form-control form-control-sm mt-2" placeholder="Catatan verifikasi (opsional)" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;">`;
-      }
-
-      html += `</div>`;
-    });
-
-    // ===== UPDATE STATUS KESELURUHAN =====
-    html += `</div><hr><h6 class="mb-3">Update Status Keseluruhan</h6>
-      <select id="newStatus" class="form-select mb-2">`;
-
-    if (currentRole === 'irban') {
-      html += `
-        <option value="Draft">Draft</option>
-        <option value="Sedang Verifikasi" selected>Sedang Verifikasi</option>
-        <option value="Diverifikasi oleh Irban">Diverifikasi oleh Irban</option>
-        <option value="Menunggu Persetujuan Inspektur">Menunggu Persetujuan Inspektur</option>
-        <option value="Ditolak">Ditolak</option>`;
-    } else if (currentRole === 'inspektur') {
-      html += `
-        <option value="Menunggu Persetujuan Inspektur" selected>Menunggu Persetujuan Inspektur</option>
-        <option value="Disetujui oleh Inspektur">Disetujui oleh Inspektur</option>
-        <option value="Ditolak">Ditolak</option>`;
-    }
-
-    html += `
-      </select>
-      <input type="text" id="statusNote" class="form-control mb-2" placeholder="Catatan untuk pemohon (opsional)">
-      <button class="btn-gradient" style="width:auto; margin-top:10px;" onclick="updateStatus(${sub.id})">Update Status</button>`;
-
-    document.getElementById('detailBody').innerHTML = html;
-    
-    const modalEl = document.getElementById('detailModal');
-    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modalInstance.show();
-  }
-
-  // ===== VIEW FILE - PERBAIKAN KHUSUS GAMBAR & XLSX =====
-  function viewFile(fileUrl, fileName) {
-    const ext = fileName.split('.').pop().toLowerCase();
-    let viewerUrl = fileUrl;
-
-    // Untuk GAMBAR (png, jpg, jpeg, gif, webp, bmp) -> Tampilkan langsung di iframe
-    // karena Content-Type sudah benar (image/png, image/jpeg, dll)
-    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].includes(ext)) {
-      viewerUrl = fileUrl;
-    }
-    // Untuk PDF -> Tampilkan langsung di iframe (browser bisa render PDF)
-    else if (ext === 'pdf') {
-      viewerUrl = fileUrl;
-    }
-    // Untuk DOC/DOCX -> Gunakan Google Docs Viewer (sama seperti sebelumnya)
-    else if (['doc', 'docx'].includes(ext)) {
-      viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
-    }
-    // Untuk XLS/XLSX -> Gunakan Microsoft Office Viewer (paling stabil untuk Excel)
-    else if (['xls', 'xlsx'].includes(ext)) {
-      viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-    }
-    // Untuk PPT/PPTX -> Gunakan Microsoft Office Viewer
-    else if (['ppt', 'pptx'].includes(ext)) {
-      viewerUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(fileUrl);
-    }
-    // Fallback -> Google Docs Viewer
-    else {
-      viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(fileUrl) + '&embedded=true';
-    }
-
-    document.getElementById('viewerTitle').innerText = fileName;
-    document.getElementById('viewerFrame').src = viewerUrl;
-    
-    const modalEl = document.getElementById('viewerModal');
-    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modalInstance.show();
-  }
-
-  // ===== VERIFIKASI DOKUMEN (TANPA MENUTUP MODAL) =====
-  async function verifDoc(docId, status) {
-    const catatan = document.getElementById('note_' + docId).value;
-    const res = await callAdmin('adminUpdateDokumenVerifikasi', { doc_id: docId, status, catatan });
-    if (res.status !== 'success') {
-      alert('Gagal: ' + res.msg);
-      return;
-    }
-    showDetail(currentDetailId);
-  }
-
-  // ===== UPDATE STATUS KESELURUHAN (MENUTUP MODAL) =====
-  async function updateStatus(id) {
-    const status = document.getElementById('newStatus').value;
-    const catatan = document.getElementById('statusNote').value;
-    const res = await callAdmin('adminUpdateStatusPengajuan', { id, status, catatan });
-    if (res.status !== 'success') {
-      alert('Gagal: ' + res.msg);
-      return;
-    }
-    const modalEl = document.getElementById('detailModal');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.hide();
-    loadPengajuan();
-  }
-
-  // ===== INISIALISASI HALAMAN =====
-  document.addEventListener('DOMContentLoaded', () => {
-    if (currentRole && currentUsername) {
-      document.getElementById('loginBox').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      if (currentRole === 'irban') {
-        document.getElementById('btnIrban').classList.add('active');
-        document.getElementById('btnInspektur').classList.remove('active');
-      } else {
-        document.getElementById('btnInspektur').classList.add('active');
-        document.getElementById('btnIrban').classList.remove('active');
-      }
-      document.getElementById('roleInfo').innerText = 'Role: ' + (currentRole === 'irban' ? 'Irban' : 'Inspektur') + ' | User: ' + currentUsername;
-      loadPengajuan();
-    } else {
-      selectRole('irban');
-    }
-  });
+const API='/adminHandler?action=';let currentRole=sessionStorage.getItem('adminRole')||'',currentUsername=sessionStorage.getItem('adminUser')||'',adminToken=sessionStorage.getItem('adminToken')||'',currentDetailId=null;
+function roleLabel(r){return r==='sekretaris'?'Sekretaris Inspektorat':'Inspektur'}
+function selectRole(role){currentRole=role;document.getElementById('btnSekretaris').classList.toggle('active',role==='sekretaris');document.getElementById('btnInspektur').classList.toggle('active',role==='inspektur')}
+async function login(){const username=document.getElementById('usernameInput').value.trim(),password=document.getElementById('passwordInput').value,error=document.getElementById('loginError');error.innerText='';if(!username||!password)return error.innerText='Username dan password wajib diisi.';try{const r=await fetch(API+'adminLogin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password,requested_role:currentRole})});const res=await r.json();if(res.status!=='success')return error.innerText=res.msg||'Login gagal.';currentRole=res.role;currentUsername=username;adminToken=res.token;sessionStorage.setItem('adminRole',currentRole);sessionStorage.setItem('adminUser',username);sessionStorage.setItem('adminToken',adminToken);document.getElementById('loginBox').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('roleInfo').innerText=`Role: ${roleLabel(currentRole)} | User: ${currentUsername}`;selectRole(currentRole);await loadPengajuan()}catch(e){console.error(e);error.innerText='Koneksi ke server gagal.'}}
+function logout(){sessionStorage.removeItem('adminRole');sessionStorage.removeItem('adminUser');sessionStorage.removeItem('adminToken');currentRole='';currentUsername='';adminToken='';document.getElementById('loginBox').style.display='block';document.getElementById('dashboard').style.display='none';document.getElementById('passwordInput').value='';document.getElementById('loginError').innerText='';selectRole('sekretaris')}
+async function callAdmin(action,params={}){try{const r=await fetch(API+encodeURIComponent(action),{method:'POST',headers:{'Content-Type':'application/json','Authorization':adminToken?'Bearer '+adminToken:''},body:JSON.stringify(params)});const data=await r.json();if(r.status===401){logout();throw new Error(data.msg||'Sesi berakhir.')}return data}catch(e){console.error(e);return{status:'error',msg:e.message||'Koneksi ke server gagal.'}}}
+function statusClass(s){if(s==='Ditolak')return'status-danger';if(s==='Disetujui oleh Inspektur')return'status-success';return'status-warning'}
+async function loadPengajuan(){const status=document.getElementById('filterStatus').value;const data=await callAdmin('adminGetAllPengajuan',{status});const list=document.getElementById('pengajuanList');list.innerHTML='';if(data.status==='error'){list.innerHTML=`<div class="text-center py-5" style="color:#ff9aaa">${esc(data.msg)}</div>`;return}if(!Array.isArray(data)||!data.length){list.innerHTML='<div class="text-center py-5" style="color:#9db4cf">Tidak ada pengajuan ditemukan.</div>';return}data.forEach(item=>list.insertAdjacentHTML('beforeend',`<div class="card-pengajuan" onclick="showDetail(${Number(item.id)})"><div class="d-flex justify-content-between align-items-center gap-3"><div><div class="number">${esc(item.nomor_pengajuan)}</div><div class="meta">${esc(item.nama_pemohon)} · ${esc(item.unit_kerja)}</div><div class="meta">${esc(item.created_at||'')}</div></div><span class="badge-custom ${statusClass(item.status_verifikasi)}">${esc(item.status_verifikasi)}</span></div></div>`))}
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]))}
+async function showDetail(id){currentDetailId=id;const data=await callAdmin('adminGetPengajuanById',{id});if(data.status==='error')return alert(data.msg);const sub=data.submission,docs=data.documents||[];let html=`<div class="detail-grid mb-3"><div class="info-card"><label>Nomor Pengajuan</label><strong>${esc(sub.nomor_pengajuan)}</strong></div><div class="info-card"><label>Status</label><strong>${esc(sub.status_verifikasi)}</strong></div><div class="info-card"><label>Nama</label><strong>${esc(sub.nama_pemohon)}</strong></div><div class="info-card"><label>NIP</label><strong>${esc(sub.nip||'-')}</strong></div><div class="info-card"><label>Pangkat / Golongan</label><strong>${esc(sub.pangkat_golongan||'-')}</strong></div><div class="info-card"><label>Jabatan</label><strong>${esc(sub.jabatan||'-')}</strong></div><div class="info-card"><label>Unit Kerja</label><strong>${esc(sub.unit_kerja||'-')}</strong></div><div class="info-card"><label>Nomor HP</label><strong>${esc(sub.nomor_hp||'-')}</strong></div><div class="info-card"><label>Gmail</label><strong>${esc(sub.gmail||'-')}</strong></div><div class="info-card"><label>Keperluan</label><strong>${esc(sub.keperluan||'-')}</strong></div></div>`;
+  if(sub.gdocs_url){html+=`<div class="gdocs-box"><strong>Form Surat Permohonan SKBT</strong><div class="small-note">Nama dan NIP pemohon sudah terisi otomatis. Form dapat diedit di Google Docs.</div><div class="link-row"><a class="link-pill" target="_blank" href="${esc(sub.gdocs_url)}">✎ Buka & Edit</a><a class="link-pill" target="_blank" href="${esc(sub.gdocs_pdf_url||'')}">⇩ PDF</a><a class="link-pill" target="_blank" href="${esc(sub.gdocs_docx_url||'')}">⇩ DOCX</a></div></div>`}
+  html+=`<h6 class="mb-2">Dokumen Pengajuan</h6>`;
+  docs.forEach(doc=>{const st=doc.verification_status||'pending';const badge=st==='approved'?'status-success':st==='rejected'?'status-danger':'status-warning';html+=`<div class="doc-item"><div class="d-flex justify-content-between align-items-start gap-3"><div class="flex-grow-1"><div style="font-weight:800">${esc(doc.file_name)}</div><div class="small-note">${esc(doc.nama_dokumen)}</div>${doc.verification_note?`<div class="small-note mt-1">Catatan: ${esc(doc.verification_note)}</div>`:''}</div><span class="badge-custom ${badge}">${esc(st)}</span></div><div class="doc-actions mt-2"><button class="btn-sm-custom btn-view" onclick='viewFile(${JSON.stringify(doc.file_url||'')},${JSON.stringify(doc.file_name||'file')})'>Lihat</button>`;
+    if(currentRole==='sekretaris'){html+=`<button class="btn-sm-custom btn-approve" onclick="verifDoc(${Number(doc.id)},'approved')">✓ Setujui</button><button class="btn-sm-custom btn-reject" onclick="verifDoc(${Number(doc.id)},'rejected')">× Tolak</button>`}html+=`</div>${currentRole==='sekretaris'?`<input id="note_${Number(doc.id)}" class="form-control form-control-sm mt-2" placeholder="Catatan verifikasi dokumen (opsional)">`:''}</div>`});
+  const statuses=currentRole==='sekretaris'?['Draft','Sedang Verifikasi','Diverifikasi oleh Sekretaris Inspektorat','Menunggu Persetujuan Inspektur','Ditolak']:['Menunggu Persetujuan Inspektur','Disetujui oleh Inspektur','Ditolak'];
+  html+=`<hr class="my-3"><h6>Update Status Pengajuan</h6><select id="newStatus" class="form-select mb-2">${statuses.map(s=>`<option value="${esc(s)}" ${s===sub.status_verifikasi?'selected':''}>${esc(s)}</option>`).join('')}</select><textarea id="statusNote" class="form-control mb-2" rows="2" placeholder="Catatan untuk pemohon (opsional)"></textarea><button class="btn-gradient" onclick="updateStatus(${Number(sub.id)})">Simpan Status</button>`;
+  document.getElementById('detailBody').innerHTML=html;bootstrap.Modal.getOrCreateInstance(document.getElementById('detailModal')).show()}
+function viewFile(url,name){if(!url)return;const ext=name.split('.').pop().toLowerCase();let viewer=url;if(['doc','docx'].includes(ext))viewer='https://docs.google.com/viewer?url='+encodeURIComponent(url)+'&embedded=true';else if(['xls','xlsx','ppt','pptx'].includes(ext))viewer='https://view.officeapps.live.com/op/view.aspx?src='+encodeURIComponent(url);document.getElementById('viewerTitle').innerText=name;document.getElementById('viewerFrame').src=viewer;bootstrap.Modal.getOrCreateInstance(document.getElementById('viewerModal')).show()}
+async function verifDoc(docId,status){const note=document.getElementById('note_'+docId)?.value||'';const res=await callAdmin('adminUpdateDokumenVerifikasi',{doc_id:docId,status,catatan:note});if(res.status!=='success')return alert(res.msg);showDetail(currentDetailId)}
+async function updateStatus(id){const status=document.getElementById('newStatus').value,note=document.getElementById('statusNote').value.trim();const res=await callAdmin('adminUpdateStatusPengajuan',{id,status,catatan:note});if(res.status!=='success')return alert(res.msg);bootstrap.Modal.getOrCreateInstance(document.getElementById('detailModal')).hide();loadPengajuan()}
+window.addEventListener('DOMContentLoaded',()=>{if(currentRole&&currentUsername&&adminToken){document.getElementById('loginBox').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('roleInfo').innerText=`Role: ${roleLabel(currentRole)} | User: ${currentUsername}`;selectRole(currentRole);loadPengajuan()}else selectRole('sekretaris')});
 </script>
-
 </body>
 </html>
